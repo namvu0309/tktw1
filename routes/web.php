@@ -13,10 +13,12 @@ Route::get('/', function () {
 });
 
 // Admin Routes
+
 Route::prefix('dashboard')->name('admin.')->group(function() {
     // Dashboard
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-
+    Route::get('/products', [ProductController::class, 'index'])->name('products');
+    // Route::get('/products/{id}', [ProductController::class, 'edit'])->name('productsEdit');
     // Users Management
     // Route::prefix('users')->name('users.')->group(function() {
     //     Route::get('/', [UserController::class, 'index'])->name('index');
@@ -37,15 +39,8 @@ Route::prefix('dashboard')->name('admin.')->group(function() {
     //     Route::delete('/delete/{id}', [CategoryController::class, 'destroy'])->name('destroy');
     // });
 
-    // // Products Management
-    // Route::prefix('products')->name('products.')->group(function() {
-    //     Route::get('/', [ProductController::class, 'index'])->name('index');
-    //     Route::get('/create', [ProductController::class, 'create'])->name('create');
-    //     Route::post('/store', [ProductController::class, 'store'])->name('store');
-    //     Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
-    //     Route::put('/update/{id}', [ProductController::class, 'update'])->name('update');
-    //     Route::delete('/delete/{id}', [ProductController::class, 'destroy'])->name('destroy');
-    // });
+    // Products Management
+    // Route::resource('products', ProductController::class,);
 
     // // Orders Management
     // Route::prefix('orders')->name('orders.')->group(function() {

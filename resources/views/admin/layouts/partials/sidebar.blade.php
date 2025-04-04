@@ -58,7 +58,7 @@
             <div class="content-side content-side-full">
                 <ul class="nav-main">
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="be_pages_ecom_dashboard.html">
+                        <a class="nav-main-link" href="{{route('admin.dashboard')}}">
                             <i class="nav-main-link-icon fa fa-dashboard"></i>
                             <span class="nav-main-link-name">Dashboard</span>
                         </a>
@@ -76,13 +76,13 @@
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="{{ route('admin.product') }}">
+                        <a class="nav-main-link" href="{{route('admin.products')}}">
                             <i class="nav-main-link-icon fa fa-boxes"></i>
                             <span class="nav-main-link-name">Products</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="be_pages_ecom_product_edit.html">
+                        <a class="nav-main-link" href="#">
                             <i class="nav-main-link-icon fa fa-edit"></i>
                             <span class="nav-main-link-name">Product Edit</span>
                         </a>
