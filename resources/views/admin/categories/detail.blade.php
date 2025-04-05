@@ -8,10 +8,17 @@
         <div class="content">
             <!-- Heading -->
             <div class="d-flex justify-content-between mb-3">
-                <h2 class="content-heading">Chi tiết danh mục: {{ $category->name }}</h2>
-                <a class="btn btn-primary" href="{{ route('admin.categories.index') }}">
-                    <i class="fa fa-arrow-left me-1 text-center"></i> Quay lại danh sách
-                </a>
+                <div>
+                    <h2 class="content-heading">Chi tiết danh mục: {{ $category->name }}</h2>
+                </div>
+                <div class="block-options">
+                    <a href="{{ route('admin.categories.edit', $category->slug) }}" class="btn btn-primary">
+                        <i class="fa fa-pencil me-1"></i> Sửa
+                    </a>
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-alt-secondary">
+                        <i class="fa fa-arrow-left me-1"></i> Quay lại
+                    </a>
+                </div>
             </div>
             <!-- END Heading -->
 
@@ -39,22 +46,23 @@
                             </p>
                             <p><strong>Danh mục con:</strong>
 
-                            @if ($category->children->count() > 0)
-                                <ul class="list-unstyled mb-0">
-                                    @foreach ($category->children as $child)
-                                        <li>{{ $child->name }}</li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <span class="text-muted">Không có danh mục con</span>
-                            @endif
+                                @if ($category->children->count() > 0)
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach ($category->children as $child)
+                                            <li>{{ $child->name }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <span class="text-muted">Không có danh mục con</span>
+                                @endif
                             </p>
                         </div>
                         <div class="col-md-4 mb-1 text-center">
                             <h4>Hình ảnh</h4>
                             @if ($category->image)
                                 <div class="card ">
-                                    <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="card-img-top" style="max-width: 300px; height: auto;">
+                                    <img src="{{ asset($category->image) }}" alt="{{ $category->name }}"
+                                        class="card-img-top" style="max-width: 300px; height: auto;">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $category->name }}</h5>
                                     </div>
@@ -64,6 +72,7 @@
                             @endif
                         </div>
                     </div>
+
 
                 </div>
             </div>

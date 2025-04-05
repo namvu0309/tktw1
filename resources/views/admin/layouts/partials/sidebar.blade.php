@@ -11,7 +11,7 @@
                 <a class="link-fx fw-bold tracking-wide mx-auto" href="index.html">
                     <span class="smini-hidden">
                         <i class="fa fa-fire text-primary"></i>
-                        <span class="fs-4 text-dual">code</span><span class="fs-4 text-primary">base</span>
+                        <span class="fs-4 text-dual">Nam</span><span class="fs-4 text-primary">Vu</span>
                     </span>
                 </a>
             </div>

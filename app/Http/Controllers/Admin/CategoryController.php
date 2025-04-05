@@ -18,11 +18,13 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $categories = Category::with('parent')
-            ->orderBy('id', 'desc')
-            ->paginate(5);
-        if ($request->has('search')) {
-            $categories->where('name', 'like', '%' . $request->search . '%');
+            ->orderBy('id', 'desc');
+
+        if ($request->has('search') && $request->search != '') {
+            $categories = $categories->where('name', 'like', '%' . $request->search . '%');
         }
+
+        $categories = $categories->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -61,6 +63,11 @@ class CategoryController extends Controller
 
             // Xử lý upload ảnh
             if ($request->hasFile('image')) {
+                $uploadPath = public_path('uploads/categories');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
+                }
+
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('uploads/categories'), $imageName);
@@ -139,6 +146,11 @@ class CategoryController extends Controller
                 // Xóa ảnh cũ nếu có
                 if ($category->image && file_exists(public_path($category->image))) {
                     unlink(public_path($category->image));
+                }
+
+                $uploadPath = public_path('uploads/categories');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
                 }
 
                 $image = $request->file('image');

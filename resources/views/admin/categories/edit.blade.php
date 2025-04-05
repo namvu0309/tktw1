@@ -13,7 +13,7 @@
             <div class="content py-1 text-center">
                 <nav class="breadcrumb bg-body-light py-2 mb-0">
                     <a class="breadcrumb-item" href="be_pages_ecom_dashboard.html">e-Commerce</a>
-                    <a class="breadcrumb-item" href="be_pages_ecom_products.html">Products</a>
+                    <a class="breadcrumb-item" href="be_pages_ecom_categorys.html">categorys</a>
                     <span class="breadcrumb-item active">Dark Souls III</span>
                 </nav>
             </div>
@@ -26,7 +26,7 @@
 
             <!-- END Overview -->
 
-            <!-- Update Product -->
+            <!-- Update category -->
             <h2 class="content-heading">Chỉnh sửa danh mục</h2>
             <div class="row">
                 <div class="col-md-12">

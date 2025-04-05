@@ -14,17 +14,19 @@ Route::get('/', function () {
 
 // Admin Routes
 
-Route::prefix('dashboard')->name('admin.')->group(function() {
+Route::prefix('dashboard')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     // product routes
-    Route::resource('products', ProductController::class);
+    Route::resource('products', ProductController::class)->parameters([
+        'products' => 'product:slug'
+    ]);
+
 
     // Categories slugs routes
     Route::resource('categories', CategoryController::class)->parameters([
         'categories' => 'category:slug'
     ]);
-
 });
 Route::prefix('/')->name('client.')->group(function () {
     // Dashboard

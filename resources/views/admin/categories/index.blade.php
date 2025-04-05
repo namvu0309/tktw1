@@ -18,6 +18,17 @@
             <div class="block block-rounded">
 
                 <div class="block-content">
+                    <form method="GET">
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm danh mục.."
+                                    value="{{ request('search') }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                     <table class="table table-hover table-vcenter">
                         <thead>
                             <tr>
@@ -35,7 +46,7 @@
                         <tbody>
                             @foreach ($categories as $category)
                                 <tr>
-                                    <th class="text-center" scope="row">{{ $loop->iteration }}</th>
+                                    <th class="text-center" scope="row">{{ $categories->firstItem() + $loop->iteration - 1 }}</th>
                                     <td>{{ $category->name }}</td>
 
                                     <td>
@@ -76,24 +87,23 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group">
-                                            <a href="{{ route('admin.categories.edit', $category->slug) }}"
-                                                class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Sửa">
-                                                <i class="fa fa-pencil-alt"></i>
-                                            </a>
-                                            <form action="{{ route('admin.categories.destroy', $category->slug) }}"
-                                                method="POST" class="d-inline delete-form"
-                                                id="delete-form-{{ $category->slug }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-secondary delete-btn"
-                                                    data-id="{{ $category->slug }}" data-bs-toggle="tooltip" title="Xóa">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-                                            </form>
                                             <a href="{{ route('admin.categories.show', $category->slug) }}"
-                                                class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Xem">
+                                                class="btn btn-sm btn-secondary" title="Chi tiết">
                                                 <i class="fa fa-eye"></i>
                                             </a>
+                                            <a href="{{ route('admin.categories.edit', $category->slug) }}"
+                                                class="btn btn-sm btn-primary" title="Sửa">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <form action="{{ route('admin.categories.destroy', $category->slug) }}"
+                                                method="POST" class="d-inline"
+                                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
 
@@ -105,7 +115,7 @@
             </div>
             <!-- END Contextual Table -->
             <div class="d-flex justify-content-end my-4">
-                {{ $categories->links('pagination::bootstrap-4') }}
+                {{ $categories->links('pagination::bootstrap-5') }}
             </div>
         </div>
         <!-- END Page Content -->
@@ -123,48 +133,5 @@
     <!-- Thêm thư viện SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Lắng nghe sự kiện click nút xóa
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const categoryId = this.getAttribute('data-id');
 
-                    Swal.fire({
-                        title: 'Bạn có chắc chắn?',
-                        text: "Danh mục này sẽ bị xóa vĩnh viễn!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Có, xóa nó!',
-                        cancelButtonText: 'Hủy'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Submit form xóa
-                            document.getElementById(`delete-form-${categoryId}`).submit();
-                        }
-                    });
-                });
-            });
-        });
-
-        // Hiển thị thông báo sau khi xóa
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Thành công!',
-                text: "{{ session('success') }}",
-            });
-        @endif
-
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi!',
-                text: "{{ session('error') }}",
-            });
-        @endif
-    </script>
 @endpush
