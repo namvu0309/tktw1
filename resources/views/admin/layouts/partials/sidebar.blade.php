@@ -41,7 +41,7 @@
                         </li>
                         <li class="list-inline-item">
                             <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
-                            <a class="link-fx text-dual" data-toggle="layout" data-action="dark_mode_toggle"
+                            <a class="link-fx text-dual" data-toggle="layout" data-action="dark_mode_on"
                                 href="javascript:void(0)">
                                 <i class="far fa-fw fa-moon" data-dark-mode-icon></i>
                             </a>
@@ -69,24 +69,20 @@
                             <span class="nav-main-link-name">Orders</span>
                         </a>
                     </li>
+
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="be_pages_ecom_order.html">
-                            <i class="nav-main-link-icon fa fa-file-text"></i>
-                            <span class="nav-main-link-name">Order</span>
-                        </a>
-                    </li>
-                    <li class="nav-main-item">
-                        <a class="nav-main-link" href="{{route('admin.products')}}">
+                        <a class="nav-main-link" href="{{route('admin.products.index')}}">
                             <i class="nav-main-link-icon fa fa-boxes"></i>
                             <span class="nav-main-link-name">Products</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="#">
-                            <i class="nav-main-link-icon fa fa-edit"></i>
-                            <span class="nav-main-link-name">Product Edit</span>
+                        <a class="nav-main-link" href="{{route('admin.categories.index')}}">
+                            <i class="nav-main-link-icon fa fa-list"></i>
+                            <span class="nav-main-link-name">Categories</span>
                         </a>
                     </li>
+
                     <li class="nav-main-item">
                         <a class="nav-main-link" href="be_pages_ecom_customer.html">
                             <i class="nav-main-link-icon fa fa-users"></i>

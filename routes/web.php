@@ -17,38 +17,12 @@ Route::get('/', function () {
 Route::prefix('dashboard')->name('admin.')->group(function() {
     // Dashboard
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    Route::get('/products', [ProductController::class, 'index'])->name('products');
-    // Route::get('/products/{id}', [ProductController::class, 'edit'])->name('productsEdit');
-    // Users Management
-    // Route::prefix('users')->name('users.')->group(function() {
-    //     Route::get('/', [UserController::class, 'index'])->name('index');
-    //     Route::get('/create', [UserController::class, 'create'])->name('create');
-    //     Route::post('/store', [UserController::class, 'store'])->name('store');
-    //     Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit');
-    //     Route::put('/update/{id}', [UserController::class, 'update'])->name('update');
-    //     Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('destroy');
-    // });
+    // product routes
+    Route::resource('products', ProductController::class);
 
-    // // Categories Management
-    // Route::prefix('categories')->name('categories.')->group(function() {
-    //     Route::get('/', [CategoryController::class, 'index'])->name('index');
-    //     Route::get('/create', [CategoryController::class, 'create'])->name('create');
-    //     Route::post('/store', [CategoryController::class, 'store'])->name('store');
-    //     Route::get('/edit/{id}', [CategoryController::class, 'edit'])->name('edit');
-    //     Route::put('/update/{id}', [CategoryController::class, 'update'])->name('update');
-    //     Route::delete('/delete/{id}', [CategoryController::class, 'destroy'])->name('destroy');
-    // });
+    // Categories routes
+    Route::resource('categories', CategoryController::class);
 
-    // Products Management
-    // Route::resource('products', ProductController::class,);
-
-    // // Orders Management
-    // Route::prefix('orders')->name('orders.')->group(function() {
-    //     Route::get('/', [OrderController::class, 'index'])->name('index');
-    //     Route::get('/show/{id}', [OrderController::class, 'show'])->name('show');
-    //     Route::put('/update-status/{id}', [OrderController::class, 'updateStatus'])->name('update.status');
-    //     Route::delete('/delete/{id}', [OrderController::class, 'destroy'])->name('destroy');
-    // });
 });
 Route::prefix('/')->name('client.')->group(function () {
     // Dashboard

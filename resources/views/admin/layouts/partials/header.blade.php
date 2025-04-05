@@ -59,7 +59,7 @@
                                 </a>
                             </div>
                             <div class="col-2">
-                                <a class="text-earth" data-toggle="theme" data-theme="assets/css/themes/earth.min.css"
+                                <a class="text-pulse" data-toggle="theme" data-theme="assets/css/themes/earth.min.css"
                                     href="javascript:void(0)">
                                     <i class="fa fa-2x fa-circle"></i>
                                 </a>

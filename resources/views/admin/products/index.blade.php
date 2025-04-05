@@ -5,7 +5,8 @@
 @section('content')
     <main id="main-container">
         <!-- Hero -->
-        <div class="bg-image" style="background-image: url('assets/media/photos/photo26@2x.jpg');">
+        <div class="bg-image" style="background-image: url('{{ asset('admin/assets/media/photos/photo26@2x.jpg') }}');">
+
             <div class="bg-black-75">
                 <div class="content content-top content-full text-center">
                     <div class="py-3">
