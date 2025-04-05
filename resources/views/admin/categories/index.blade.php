@@ -23,6 +23,8 @@
                             <tr>
                                 <th class="text-center" style="width: 50px;">#</th>
                                 <th>Tên danh mục</th>
+                                <th>Ảnh Danh Mục</th>
+                                <th>Slug</th>
                                 <th>Mô tả</th>
                                 <th>Trạng Thái</th>
                                 <th>Danh mục con</th>
@@ -35,18 +37,29 @@
                                 <tr>
                                     <th class="text-center" scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $category->name }}</td>
+
+                                    <td>
+                                        @if ($category->image)
+                                            <img src="{{ asset($category->image) }}" alt="{{ $category->name }}"
+                                                style="width: 50px; height: auto;">
+                                        @else
+                                            <span class="text-muted">Không có ảnh</span>
+                                        @endif
+                                    </td>
+
+                                    <td>{{ $category->slug }}</td>
                                     <td>{{ $category->description }}</td>
                                     <td>
-                                        @if($category->is_active)
+                                        @if ($category->is_active)
                                             <span class="badge bg-success">Hoạt động</span>
                                         @else
                                             <span class="badge bg-danger">Không hoạt động</span>
                                         @endif
                                     </td>
                                     <td>
-                                        @if($category->children->count() > 0)
+                                        @if ($category->children->count() > 0)
                                             <ul class="list-unstyled mb-0">
-                                                @foreach($category->children as $child)
+                                                @foreach ($category->children as $child)
                                                     <li>{{ $child->name }}</li>
                                                 @endforeach
                                             </ul>
@@ -55,7 +68,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($category->parent)
+                                        @if ($category->parent)
                                             {{ $category->parent->name }}
                                         @else
                                             <span class="text-muted">Không có danh mục cha</span>
@@ -63,22 +76,27 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group">
-                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                                class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" title="Sửa">
+                                            <a href="{{ route('admin.categories.edit', $category->slug) }}"
+                                                class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Sửa">
                                                 <i class="fa fa-pencil-alt"></i>
                                             </a>
-                                            <form action="{{ route('admin.categories.destroy', $category->id) }}"
-                                                method="POST" class="d-inline delete-form" id="delete-form-{{ $category->id }}">
+                                            <form action="{{ route('admin.categories.destroy', $category->slug) }}"
+                                                method="POST" class="d-inline delete-form"
+                                                id="delete-form-{{ $category->slug }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="btn btn-sm btn-secondary delete-btn"
-                                                        data-id="{{ $category->id }}"
-                                                        data-bs-toggle="tooltip" title="Xóa">
+                                                    data-id="{{ $category->slug }}" data-bs-toggle="tooltip" title="Xóa">
                                                     <i class="fa fa-times"></i>
                                                 </button>
                                             </form>
+                                            <a href="{{ route('admin.categories.show', $category->slug) }}"
+                                                class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Xem">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
                                         </div>
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -133,7 +151,7 @@
         });
 
         // Hiển thị thông báo sau khi xóa
-        @if(session('success'))
+        @if (session('success'))
             Swal.fire({
                 icon: 'success',
                 title: 'Thành công!',
@@ -141,7 +159,7 @@
             });
         @endif
 
-        @if(session('error'))
+        @if (session('error'))
             Swal.fire({
                 icon: 'error',
                 title: 'Lỗi!',

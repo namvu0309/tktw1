@@ -20,8 +20,10 @@ Route::prefix('dashboard')->name('admin.')->group(function() {
     // product routes
     Route::resource('products', ProductController::class);
 
-    // Categories routes
-    Route::resource('categories', CategoryController::class);
+    // Categories slugs routes
+    Route::resource('categories', CategoryController::class)->parameters([
+        'categories' => 'category:slug'
+    ]);
 
 });
 Route::prefix('/')->name('client.')->group(function () {

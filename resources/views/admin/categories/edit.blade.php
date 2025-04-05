@@ -30,7 +30,8 @@
             <h2 class="content-heading">Chỉnh sửa danh mục</h2>
             <div class="row">
                 <div class="col-md-12">
-                    <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.categories.update', $category->slug) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="block block-rounded">
@@ -88,16 +89,12 @@
                                             <i class="fa fa-list-ul text-white"></i>
                                         </span>
                                         <select class="form-select js-select2 @error('children') is-invalid @enderror"
-                                                id="children"
-                                                name="children[]"
-                                                style="width: 100%;"
-                                                data-placeholder="Chọn danh mục con"
-                                                multiple>
+                                            id="children" name="children[]" style="width: 100%;"
+                                            data-placeholder="Chọn danh mục con" multiple>
                                             @foreach ($parentCategories as $cat)
-                                                @if($cat->id != old('parent_id', $category->parent_id))
-                                                    <option value="{{ $cat->id }}"
-                                                        class="text-primary"
-                                                        {{ old('children') && in_array($cat->id, old('children')) ? 'selected' : '' }}>
+                                                @if ($cat->id != $category->id && $cat->id != $category->parent_id)
+                                                    <option value="{{ $cat->id }}" class="text-primary"
+                                                        {{ in_array($cat->id, $category->children->pluck('id')->toArray()) ? 'selected' : '' }}>
                                                         {{ $cat->name }}
                                                     </option>
                                                 @endif
@@ -117,6 +114,12 @@
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label" for="image">Hình ảnh</label>
+                                    @if ($category->image)
+                                        <div class="mb-2">
+                                            <img src="{{ asset($category->image) }}" alt="{{ $category->name }}"
+                                                class="img-thumbnail" style="max-width: 200px">
+                                        </div>
+                                    @endif
                                     <input type="file" class="form-control @error('image') is-invalid @enderror"
                                         id="image" name="image">
                                     @error('image')
@@ -127,7 +130,7 @@
                                     <label class="form-label d-block">Trạng thái</label>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
-                                            value="1" {{ old('is_active', $category->is_active) ? 'checked' : '' }}>
+                                            value="1" {{ $category->is_active ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_active">Hoạt động</label>
                                     </div>
                                 </div>

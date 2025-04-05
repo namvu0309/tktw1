@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
@@ -16,7 +17,9 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $categories = Category::with('parent')->orderBy('id', 'desc')->paginate(5);
+        $categories = Category::with('parent')
+            ->orderBy('id', 'desc')
+            ->paginate(5);
         if ($request->has('search')) {
             $categories->where('name', 'like', '%' . $request->search . '%');
         }
@@ -28,7 +31,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $parentCategories = Category::where('parent_id', null)->get();
+        $parentCategories = Category::whereNull('parent_id')->get();
         return view('admin.categories.create', compact('parentCategories'));
     }
 
@@ -38,10 +41,20 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         try {
+            DB::beginTransaction();
+
             $validated = $request->validated();
 
-            // Tạo slug từ tên
-            $validated['slug'] = Str::slug($validated['name']);
+            // Tạo slug từ tên và đảm bảo duy nhất
+            $slug = Str::slug($validated['name']);
+            $count = 1;
+
+            while (Category::where('slug', $slug)->exists()) {
+                $slug = Str::slug($validated['name']) . '-' . $count;
+                $count++;
+            }
+
+            $validated['slug'] = $slug;
 
             // Xử lý is_active
             $validated['is_active'] = $request->has('is_active');
@@ -54,14 +67,14 @@ class CategoryController extends Controller
                 $validated['image'] = 'uploads/categories/' . $imageName;
             }
 
-            // Debug để xem dữ liệu trước khi tạo
+            Category::create($validated);
 
-            $category = Category::create($validated);
-
+            DB::commit();
             return redirect()->route('admin.categories.index')
                 ->with('success', 'Danh mục đã được tạo thành công.');
-
         } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi tạo danh mục: ' . $e->getMessage());
             return redirect()->back()
                 ->with('error', 'Có lỗi xảy ra khi tạo danh mục: ' . $e->getMessage())
                 ->withInput();
@@ -71,75 +84,132 @@ class CategoryController extends Controller
     /**
      * Hiển thị chi tiết danh mục
      */
-    public function show(string $id)
+    public function show(Category $category)
     {
-        $category = Category::with(['parent', 'children', 'products'])->findOrFail($id);
-        return view('admin.categories.show', compact('category'));
+        $category->load(['parent', 'children', 'products']);
+        return view('admin.categories.detail', compact('category'));
     }
 
     /**
      * Hiển thị form chỉnh sửa danh mục
      */
-    public function edit(string $id)
+    public function edit(Category $category)
     {
-        $category = Category::findOrFail($id);
-        $parentCategories = Category::where('parent_id', null)->get();
+        // Load cả parent và children
+        $category->load(['children', 'parent']);
+
+        $parentCategories = Category::whereNull('parent_id')
+            ->where('id', '!=', $category->id)
+            ->get();
+
         return view('admin.categories.edit', compact('category', 'parentCategories'));
     }
 
     /**
      * Cập nhật danh mục trong database
      */
-    public function update(CategoryRequest $request, string $id)
+    public function update(CategoryRequest $request, Category $category)
     {
-        $category = Category::findOrFail($id);
-        $data = $request->validated();
+        try {
+            DB::beginTransaction();
 
-        if ($request->hasFile('image')) {
-            // Xóa ảnh cũ nếu có
-            if ($category->image && file_exists(public_path($category->image))) {
-                unlink(public_path($category->image));
+            $data = $request->validated();
+
+            // Kiểm tra và tạo slug duy nhất
+            if ($data['name'] !== $category->name) {
+                $slug = Str::slug($data['name']);
+                $count = 1;
+
+                while (Category::where('slug', $slug)
+                    ->where('id', '!=', $category->id)
+                    ->exists()
+                ) {
+                    $slug = Str::slug($data['name']) . '-' . $count;
+                    $count++;
+                }
+
+                $data['slug'] = $slug;
             }
 
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/categories'), $imageName);
-            $data['image'] = 'uploads/categories/' . $imageName;
+            // Xử lý trạng thái
+            $data['is_active'] = $request->boolean('is_active');
+
+            // Xử lý upload ảnh mới nếu có
+            if ($request->hasFile('image')) {
+                // Xóa ảnh cũ nếu có
+                if ($category->image && file_exists(public_path($category->image))) {
+                    unlink(public_path($category->image));
+                }
+
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/categories'), $imageName);
+                $data['image'] = 'uploads/categories/' . $imageName;
+            }
+
+            // Loại bỏ các trường không cần thiết từ $data
+            $updateData = array_filter($data, function ($key) {
+                return in_array($key, [
+                    'name',
+                    'slug',
+                    'description',
+                    'parent_id',
+                    'image',
+                    'is_active'
+                ]);
+            }, ARRAY_FILTER_USE_KEY);
+
+            // Cập nhật danh mục
+            $category->update($updateData);
+
+            // Xử lý danh mục con nếu có
+            if (isset($data['children'])) {
+                $category->children()->sync($data['children']);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Danh mục đã được cập nhật thành công.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi cập nhật danh mục: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi cập nhật danh mục: ' . $e->getMessage())
+                ->withInput();
         }
-
-        $category->update($data);
-
-        return redirect()->route('admin.categories.index')
-            ->with('success', 'Danh mục đã được cập nhật thành công.');
     }
 
     /**
      * Xóa danh mục khỏi database
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        $category = Category::findOrFail($id);
+        try {
+            DB::beginTransaction();
 
-        // Kiểm tra xem có sản phẩm nào thuộc danh mục này không
-        if ($category->products()->count() > 0) {
+            if ($category->products()->exists()) {
+                throw new \Exception('Không thể xóa danh mục này vì có sản phẩm đang sử dụng.');
+            }
+
+            if ($category->children()->exists()) {
+                throw new \Exception('Không thể xóa danh mục này vì có danh mục con.');
+            }
+
+            // Xóa ảnh nếu có
+            if ($category->image && file_exists(public_path($category->image))) {
+                unlink(public_path($category->image));
+            }
+
+            $category->delete();
+
+            DB::commit();
             return redirect()->route('admin.categories.index')
-                ->with('error', 'Không thể xóa danh mục này vì có sản phẩm đang sử dụng.');
-        }
-
-        // Kiểm tra xem có danh mục con không
-        if ($category->children()->count() > 0) {
+                ->with('success', 'Danh mục đã được xóa thành công.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi xóa danh mục: ' . $e->getMessage());
             return redirect()->route('admin.categories.index')
-                ->with('error', 'Không thể xóa danh mục này vì có danh mục con.');
+                ->with('error', $e->getMessage());
         }
-
-        // Xóa ảnh nếu có
-        if ($category->image && file_exists(public_path($category->image))) {
-            unlink(public_path($category->image));
-        }
-
-        $category->delete();
-
-        return redirect()->route('admin.categories.index')
-            ->with('success', 'Danh mục đã được xóa thành công.');
     }
 }

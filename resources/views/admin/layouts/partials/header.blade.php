@@ -29,37 +29,37 @@
                     <div class="p-3">
                         <div class="row g-0 text-center">
                             <div class="col-2">
-                                <a class="text-default" data-toggle="theme" data-theme="default"
+                                <a class="text-default" data-toggle="theme" data-theme="{{ asset('admin/assets/css/themes/default.min.css') }}"
                                     href="javascript:void(0)">
                                     <i class="fa fa-2x fa-circle"></i>
                                 </a>
                             </div>
                             <div class="col-2">
                                 <a class="text-elegance" data-toggle="theme"
-                                    data-theme="assets/css/themes/elegance.min.css" href="javascript:void(0)">
+                                    data-theme="{{ asset('admin/assets/css/themes/elegance.min.css') }}" href="javascript:void(0)">
                                     <i class="fa fa-2x fa-circle"></i>
                                 </a>
                             </div>
                             <div class="col-2">
-                                <a class="text-pulse" data-toggle="theme" data-theme="assets/css/themes/pulse.min.css"
+                                <a class="text-pulse" data-toggle="theme" data-theme="{{ asset('admin/assets/css/themes/pulse.min.css') }}"
                                     href="javascript:void(0)">
                                     <i class="fa fa-2x fa-circle"></i>
                                 </a>
                             </div>
                             <div class="col-2">
-                                <a class="text-flat" data-toggle="theme" data-theme="assets/css/themes/flat.min.css"
+                                <a class="text-flat" data-toggle="theme" data-theme="{{ asset('admin/assets/css/themes/flat.min.css') }}"
                                     href="javascript:void(0)">
                                     <i class="fa fa-2x fa-circle"></i>
                                 </a>
                             </div>
                             <div class="col-2">
                                 <a class="text-corporate" data-toggle="theme"
-                                    data-theme="assets/css/themes/corporate.min.css" href="javascript:void(0)">
+                                    data-theme="{{ asset('admin/assets/css/themes/corporate.min.css') }}" href="javascript:void(0)">
                                     <i class="fa fa-2x fa-circle"></i>
                                 </a>
                             </div>
                             <div class="col-2">
-                                <a class="text-pulse" data-toggle="theme" data-theme="assets/css/themes/earth.min.css"
+                                <a class="text-pulse" data-toggle="theme" data-theme="{{ asset('admin/assets/css/themes/earth.min.css') }}"
                                     href="javascript:void(0)">
                                     <i class="fa fa-2x fa-circle"></i>
                                 </a>

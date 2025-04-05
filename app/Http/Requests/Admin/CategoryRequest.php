@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Requests\Admin;
-// Không cần import Str vì không được sử dụng trong file này
-use Illuminate\Support\Str;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -13,7 +13,7 @@ class CategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Có thể thay đổi logic phân quyền tại đây
+        return true;
     }
 
     /**
@@ -21,14 +21,30 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $category = $this->route('category');
+
         return [
             'name' => 'required|string|max:255',
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->ignore($category),
+            ],
             'description' => 'nullable|string',
+            'parent_id' => [
+                'nullable',
+                'exists:categories,id',
+                function ($attribute, $value, $fail) {
+                    if ($value == $this->route('category')?->id) {
+                        $fail('Không thể chọn chính danh mục này làm danh mục cha.');
+                    }
+                }
+            ],
+            'children' => 'nullable|array',
+            'children.*' => 'exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'parent_id' => 'nullable|exists:categories,id',
-            'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
-            'slug' => 'nullable|string|unique:categories,slug,' . $this->route('category'),
         ];
     }
 
@@ -53,8 +69,6 @@ class CategoryRequest extends FormRequest
     /**
      * Chuẩn bị dữ liệu trước khi validate
      */
-
-
     protected function prepareForValidation()
     {
         if ($this->name && !$this->slug) {

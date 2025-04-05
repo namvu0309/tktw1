@@ -31,7 +31,7 @@
                 <!-- Visible only in normal mode -->
                 <div class="smini-hidden text-center mx-auto">
                     <a class="img-link" href="be_pages_generic_profile.html">
-                        <img class="img-avatar" src="assets/media/avatars/avatar15.jpg" alt="">
+                        <img class="img-avatar" src="{{ asset('admin/assets/media/avatars/avatar15.jpg') }}" alt="">
                     </a>
                     <ul class="list-inline mt-3 mb-0">
                         <li class="list-inline-item">
@@ -41,7 +41,7 @@
                         </li>
                         <li class="list-inline-item">
                             <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
-                            <a class="link-fx text-dual" data-toggle="layout" data-action="dark_mode_on"
+                            <a class="link-fx text-dual" data-toggle="layout" data-action="dark_mode_toggle"
                                 href="javascript:void(0)">
                                 <i class="far fa-fw fa-moon" data-dark-mode-icon></i>
                             </a>

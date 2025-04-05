@@ -87,15 +87,11 @@
                                             <i class="fa fa-list-ul text-white"></i>
                                         </span>
                                         <select class="form-select js-select2 @error('children') is-invalid @enderror"
-                                                id="children"
-                                                name="children[]"
-                                                style="width: 100%;"
-                                                data-placeholder="Chọn danh mục con"
-                                                multiple>
+                                            id="children" name="children[]" style="width: 100%;"
+                                            data-placeholder="Chọn danh mục con" multiple>
                                             @foreach ($parentCategories as $cat)
-                                                @if($cat->id != old('parent_id'))
-                                                    <option value="{{ $cat->id }}"
-                                                        class="text-primary"
+                                                @if ($cat->id != old('parent_id'))
+                                                    <option value="{{ $cat->id }}" class="text-primary"
                                                         {{ old('children') && in_array($cat->id, old('children')) ? 'selected' : '' }}>
                                                         {{ $cat->name }}
                                                     </option>
