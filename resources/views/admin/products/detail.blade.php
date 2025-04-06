@@ -9,9 +9,14 @@
             <!-- Heading -->
             <div class="d-flex justify-content-between mb-3">
                 <h2 class="content-heading">Chi tiết sản phẩm: {{ $product->name }}</h2>
-                <a class="btn btn-primary" href="{{ route('admin.products.index') }}">
-                    <i class="fa fa-arrow-left me-1 text-center"></i> Quay lại danh sách
-                </a>
+                <div class="block-options">
+                    <a href="{{ route('admin.products.create', $product->slug) }}" class="btn btn-primary">
+                        <i class="fa fa-pencil me-1"></i> Sửa
+                    </a>
+                    <a href="{{ route('admin.products.index') }}" class="btn btn-alt-secondary">
+                        <i class="fa fa-arrow-left me-1"></i> Quay lại
+                    </a>
+                </div>
             </div>
             <!-- END Heading -->
 
@@ -58,10 +63,10 @@
                         </div>
                         <div class="col-md-4 mb-1 text-center">
                             <h4>Hình ảnh</h4>
-                            @if ($product->image_path)
-                                <div class="card ">
-                                    <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="card-img-top"
-                                        style="max-width: 300px; height: auto;">
+                            @if ($product->images->count() > 0)
+                                <div class="card">
+                                    <img src="{{ asset($product->primaryImage->image_path) }}" alt="{{ $product->name }}"
+                                        class="card-img-top" style="max-width: 300px; height: auto;">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $product->name }}</h5>
                                     </div>

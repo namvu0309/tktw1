@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,
+            AccountSeeder::class,
             // Các seeder khác...
         ]);
     }

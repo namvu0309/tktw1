@@ -42,9 +42,9 @@
                 </div>
                 <div class="block-content">
                     <div class="row mb-4">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <form action="{{ route('admin.products.index') }}" method="GET" class="d-flex gap-2">
-                                <input type="text" class="form-control" name="search" placeholder="Tìm kiếm sản phẩm..."
+                                <input type="text" class="form-control " name="search" placeholder="Tìm kiếm sản phẩm..."
                                     value="{{ request('search') }}">
                                 <select class="form-select" name="category_id" style="width: 200px;">
                                     <option value="">Tất cả danh mục</option>
@@ -66,7 +66,7 @@
                                     </option>
                                 </select>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-search me-1"></i> Tìm kiếm
+                                    <i class="fa fa-search me-1 "></i>
                                 </button>
                             </form>
                         </div>

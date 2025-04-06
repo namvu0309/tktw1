@@ -1,8 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\AdminMiddleware;
+use Illuminate\Cache\RateLimiting\Limit;
+use App\Http\Middleware\ClientMiddleware;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,8 +16,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+    //
+    $middleware->alias([
+        'dashboard' => AdminMiddleware::class,
+        'client' => ClientMiddleware::class,
+        'throttle:login' => ThrottleRequests::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+        // Configure exception handling
+    })
+    ->booting(function () {
+        // Define rate limiters
+        RateLimiter::for('login', function ($request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+    })
+    ->create();

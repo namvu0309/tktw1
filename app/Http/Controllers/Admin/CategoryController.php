@@ -122,6 +122,9 @@ class CategoryController extends Controller
 
             $data = $request->validated();
 
+            // Lưu trạng thái cũ để so sánh
+            $oldStatus = $category->is_active;
+
             // Kiểm tra và tạo slug duy nhất
             if ($data['name'] !== $category->name) {
                 $slug = Str::slug($data['name']);
@@ -179,13 +182,45 @@ class CategoryController extends Controller
                 $category->children()->sync($data['children']);
             }
 
+            // Nếu trạng thái thay đổi, cập nhật trạng thái của tất cả sản phẩm trong danh mục
+            if ($oldStatus !== $data['is_active']) {
+                // Cập nhật sản phẩm trực tiếp trong danh mục này
+                $category->products()->update([
+                    'status' => $data['is_active'] ? 'in_stock' : 'out_of_stock'
+                ]);
+
+                // Nếu có danh mục con, cập nhật cả sản phẩm trong danh mục con
+                $childrenIds = $category->children()->pluck('id')->toArray();
+                if (!empty($childrenIds)) {
+                    DB::table('products')
+                        ->whereIn('category_id', $childrenIds)
+                        ->update([
+                            'status' => $data['is_active'] ? 'in_stock' : 'out_of_stock',
+                            'updated_at' => now()
+                        ]);
+                }
+
+                // Log hành động cập nhật trạng thái
+                Log::info('Đã cập nhật trạng thái sản phẩm theo danh mục', [
+                    'category_id' => $category->id,
+                    'old_status' => $oldStatus,
+                    'new_status' => $data['is_active'],
+                    'affected_products' => $category->products()->count()
+                ]);
+            }
+
             DB::commit();
-            return redirect()->route('admin.categories.index')
-                ->with('success', 'Danh mục đã được cập nhật thành công.');
+
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Danh mục đã được cập nhật thành công. ' .
+                    ($oldStatus !== $data['is_active'] ? 'Trạng thái của các sản phẩm cũng đã được cập nhật.' : ''));
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Lỗi khi cập nhật danh mục: ' . $e->getMessage());
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->with('error', 'Có lỗi xảy ra khi cập nhật danh mục: ' . $e->getMessage())
                 ->withInput();
         }
@@ -194,32 +229,79 @@ class CategoryController extends Controller
     /**
      * Xóa danh mục khỏi database
      */
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
         try {
             DB::beginTransaction();
 
-            if ($category->products()->exists()) {
-                throw new \Exception('Không thể xóa danh mục này vì có sản phẩm đang sử dụng.');
-            }
+            // Kiểm tra có sản phẩm không
+            $productsCount = $category->products()->count();
+            $hasChildren = $category->children()->exists();
 
-            if ($category->children()->exists()) {
+            // Nếu có danh mục con, không cho phép xóa
+            if ($hasChildren) {
                 throw new \Exception('Không thể xóa danh mục này vì có danh mục con.');
             }
 
-            // Xóa ảnh nếu có
+            // Kiểm tra force delete flag từ request
+            $forceDelete = $request->input('force_delete', false);
+
+            if ($productsCount > 0 && !$forceDelete) {
+                // Nếu có sản phẩm và không phải force delete, trả về JSON response
+                return response()->json([
+                    'needConfirmation' => true,
+                    'message' => "Danh mục này đang chứa {$productsCount} sản phẩm.",
+                    'productsCount' => $productsCount,
+                    'categoryId' => $category->id
+                ]);
+            }
+
+            // Nếu force delete hoặc không có sản phẩm, tiến hành xóa
+            if ($forceDelete) {
+                // Xóa tất cả sản phẩm trong danh mục
+                $category->products()->each(function ($product) {
+                    // Xóa ảnh của sản phẩm
+                    foreach ($product->images as $image) {
+                        if (file_exists(public_path($image->image_path))) {
+                            unlink(public_path($image->image_path));
+                        }
+                        $image->delete();
+                    }
+                });
+                $category->products()->delete();
+            }
+
+            // Xóa ảnh của danh mục nếu có
             if ($category->image && file_exists(public_path($category->image))) {
                 unlink(public_path($category->image));
             }
 
+            // Xóa danh mục
             $category->delete();
 
             DB::commit();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Danh mục đã được xóa thành công.'
+                ]);
+            }
+
             return redirect()->route('admin.categories.index')
                 ->with('success', 'Danh mục đã được xóa thành công.');
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Lỗi khi xóa danh mục: ' . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+            }
+
             return redirect()->route('admin.categories.index')
                 ->with('error', $e->getMessage());
         }

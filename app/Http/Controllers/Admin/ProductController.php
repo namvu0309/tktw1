@@ -182,8 +182,8 @@ class ProductController extends Controller
                         ->update(['is_primary' => true]);
                 }
             }
-            if ($validated['quantity'] > 0 && $validated['status'] === 'Hết hàng') {
-                return back()->withInput()->with('error', 'Sản phẩm còn hàng thì không thể đặt trạng thái "Hết hàng".');
+            if ($validated['quantity'] > 0 && $validated['status'] === 'out_of_stock') {
+                return back()->withInput()->with('error', 'Không thể đặt trạng thái "Hết hàng" khi sản phẩm còn số lượng tồn kho.');
             }
 
 
@@ -227,7 +227,9 @@ class ProductController extends Controller
                 ->with('success', 'Xóa sản phẩm thành công!');
         } catch (\Exception $e) {
             return redirect()->route('admin.products.index')
-                ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage());
-        }
+                ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage())
+            ->withErrors(['error' => $e->getMessage()])
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            }
     }
 }

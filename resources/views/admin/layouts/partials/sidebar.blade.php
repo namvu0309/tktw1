@@ -31,7 +31,8 @@
                 <!-- Visible only in normal mode -->
                 <div class="smini-hidden text-center mx-auto">
                     <a class="img-link" href="be_pages_generic_profile.html">
-                        <img class="img-avatar" src="{{ asset('admin/assets/media/avatars/avatar15.jpg') }}" alt="">
+                        <img class="img-avatar" src="{{ asset('admin/assets/media/avatars/avatar15.jpg') }}"
+                            alt="">
                     </a>
                     <ul class="list-inline mt-3 mb-0">
                         <li class="list-inline-item">
@@ -47,9 +48,13 @@
                             </a>
                         </li>
                         <li class="list-inline-item">
-                            <a class="link-fx text-dual" href="op_auth_signin.html">
-                                <i class="fa fa-sign-out-alt"></i>
-                            </a>
+                            <form action="{{ route('admin.auth.logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fa fa-sign-out-alt"></i>
+                                </button>
+                            </form>
+
                         </li>
                     </ul>
                 </div>
@@ -58,7 +63,7 @@
             <div class="content-side content-side-full">
                 <ul class="nav-main">
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="{{route('admin.dashboard')}}">
+                        <a class="nav-main-link" href="{{ route('admin.dashboard') }}">
                             <i class="nav-main-link-icon fa fa-dashboard"></i>
                             <span class="nav-main-link-name">Dashboard</span>
                         </a>
@@ -71,13 +76,13 @@
                     </li>
 
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="{{route('admin.products.index')}}">
+                        <a class="nav-main-link" href="{{ route('admin.products.index') }}">
                             <i class="nav-main-link-icon fa fa-boxes"></i>
                             <span class="nav-main-link-name">Products</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link" href="{{route('admin.categories.index')}}">
+                        <a class="nav-main-link" href="{{ route('admin.categories.index') }}">
                             <i class="nav-main-link-icon fa fa-list"></i>
                             <span class="nav-main-link-name">Categories</span>
                         </a>

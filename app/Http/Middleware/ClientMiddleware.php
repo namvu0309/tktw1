@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class ClientMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,13 +16,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Kiểm tra đăng nhập và role admin
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
-            return redirect()
-                ->route('admin.auth.login')
-                ->with('error', 'Bạn cần đăng nhập với tài khoản admin để truy cập.');
+        if (!Auth::check()) {
+            return redirect('/login');
         }
-
         return $next($request);
     }
 }

@@ -33,6 +33,13 @@
                         </div>
                     @endif
 
+                    {{-- Hiển thị thông báo thành công --}}
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
                     <form action="{{ route('admin.products.update', $product->slug) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
@@ -80,6 +87,8 @@
                                         @enderror
                                     </div>
                                 </div>
+
+
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
@@ -99,49 +108,52 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label" for="status">Trạng thái <span
-                                            class="text-danger">*</span></label>
-                                    <select class="form-select @error('status') is-invalid @enderror" id="status"
-                                        name="status" required>
-                                        <option value="in_stock"
-                                            {{ old('status', $product->status) == 'in_stock' ? 'selected' : '' }}>
-                                            Còn hàng
-                                        </option>
-                                        <option value="out_of_stock"
-                                            {{ old('status', $product->status) == 'out_of_stock' ? 'selected' : '' }}>
-                                            Hết hàng
-                                        </option>
-                                    </select>
-                                    @error('status')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label">Hình ảnh sản phẩm</label>
-                                    <div class="mb-3">
-                                        @foreach ($product->images as $image)
-                                            <div class="d-inline-block position-relative me-2 mb-2">
-                                                <img src="{{ asset($image->image_path) }}" alt="{{ $image->alt }}"
-                                                    class="img-thumbnail" style="max-width: 100px">
-                                                <div class="form-check position-absolute" style="top: 5px; left: 5px;">
-                                                    <input class="form-check-input" type="radio" name="primary_image"
-                                                        value="{{ $image->id }}"
-                                                        {{ $image->is_primary ? 'checked' : '' }}>
-                                                </div>
-                                            </div>
-                                        @endforeach
+                                <div class="row mb-4">
+                                    <div class="col">
+                                        <label class="form-label" for="status">Trạng thái <span
+                                                class="text-danger">*</span></label>
+                                        <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                            name="status" required>
+                                            <option value="in_stock"
+                                                {{ old('status', $product->status) == 'in_stock' ? 'selected' : '' }}>
+                                                Còn hàng
+                                            </option>
+                                            <option value="out_of_stock"
+                                                {{ old('status', $product->status) == 'out_of_stock' ? 'selected' : '' }}>
+                                                Hết hàng
+                                            </option>
+                                        </select>
+                                        @error('status')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">
+                                            Trạng thái sẽ tự động cập nhật theo số lượng sản phẩm
+                                        </small>
                                     </div>
-                                    <input type="file" class="form-control @error('images') is-invalid @enderror"
-                                        id="images" name="images[]" accept="image/*" multiple>
-                                    <small class="text-muted">Có thể chọn nhiều ảnh. Ảnh đầu tiên sẽ được chọn làm ảnh chính.</small>
-                                    @error('images')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="">
+                                        <label class="form-label">Hình ảnh sản phẩm</label>
+                                        <div class="mb-3">
+                                            @foreach ($product->images as $image)
+                                                <div class="d-inline-block position-relative me-2 mb-2">
+                                                    <img src="{{ asset($image->image_path) }}" alt="{{ $image->alt }}"
+                                                        class="img-thumbnail" style="max-width: 100px">
+                                                    <div class="form-check position-absolute" style="top: 5px; left: 5px;">
+                                                        <input class="form-check-input" type="radio" name="primary_image"
+                                                            value="{{ $image->id }}"
+                                                            {{ $image->is_primary ? 'checked' : '' }}>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <input type="file" class="form-control @error('images') is-invalid @enderror"
+                                            id="images" name="images[]" accept="image/*" multiple>
+                                        <small class="text-muted">Có thể chọn nhiều ảnh. Ảnh đầu tiên sẽ được chọn làm ảnh
+                                            chính.</small>
+                                        @error('images')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-
                                 <div class="mb-4">
                                     <button type="submit" class="btn btn-primary w-100">
                                         <i class="fa fa-save me-1"></i> Cập nhật sản phẩm
@@ -171,6 +183,58 @@
 
     <!-- Page JS Code -->
     <script>
+        // Xử lý kiểm tra số lượng và trạng thái
+        document.addEventListener('DOMContentLoaded', function() {
+            const quantityInput = document.getElementById('quantity');
+            const statusSelect = document.getElementById('status');
+
+            function validateQuantityAndStatus() {
+                const quantity = parseInt(quantityInput.value) || 0;
+                const status = statusSelect.value;
+
+                if (quantity > 0 && status === 'out_of_stock') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cảnh báo!',
+                        text: 'Không thể đặt trạng thái hết hàng khi số lượng sản phẩm còn ' + quantity,
+                        showConfirmButton: true
+                    });
+                    statusSelect.value = 'in_stock';
+                    return false;
+                }
+
+                if (quantity === 0 && status === 'in_stock') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cảnh báo!',
+                        text: 'Không thể đặt trạng thái còn hàng khi số lượng sản phẩm là 0',
+                        showConfirmButton: true
+                    });
+                    statusSelect.value = 'out_of_stock';
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Kiểm tra khi thay đổi số lượng
+            quantityInput.addEventListener('change', function() {
+                validateQuantityAndStatus();
+            });
+
+            // Kiểm tra khi thay đổi trạng thái
+            statusSelect.addEventListener('change', function() {
+                validateQuantityAndStatus();
+            });
+
+            // Kiểm tra khi submit form
+            document.querySelector('form').addEventListener('submit', function(e) {
+                if (!validateQuantityAndStatus()) {
+                    e.preventDefault();
+                }
+            });
+        });
+
         // Xử lý hiển thị thông báo với SweetAlert2
         @if (session('error'))
             Swal.fire({
