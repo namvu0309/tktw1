@@ -64,7 +64,7 @@
                             <!-- Sign In Form -->
                             <!-- jQuery Validation functionality is initialized with .js-validation-signin class in js/pages/op_auth_signin.min.js which was auto compiled from _js/pages/op_auth_signin.js -->
                             <!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
-                            <form class="js-validation-signin" action="{{ route('admin.auth.login') }}" method="POST">
+                            <form action="{{ route('login.post') }}" method="post">
                                 @csrf
                                 <div class="mb-4">
                                     <div class="input-group">

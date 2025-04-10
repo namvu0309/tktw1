@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,10 +19,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'ho_ten',
         'email',
         'password',
-        'role',
+        'dia_chi',
+        'so_dien_thoai',
+        'ngay_sinh',
+        'gioi_tinh',
+        'anh_dai_dien',
+        'role'
     ];
 
     /**
@@ -31,9 +37,12 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'remember_token',
     ];
     protected $casts = [
-        'password' => 'hashed',
+        'email_verified_at' => 'datetime',
+        'ngay_sinh' => 'date',
+        'gioi_tinh' => 'integer',
     ];
 
     /**
@@ -60,5 +69,23 @@ class User extends Authenticatable
             return $this->roles->contains('name', $role);
         }
         return !! $role->intersect($this->roles)->count();
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->anh_dai_dien) {
+            return asset('storage/' . $this->anh_dai_dien);
+        }
+        return asset('images/default-avatar.png');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
     }
 }

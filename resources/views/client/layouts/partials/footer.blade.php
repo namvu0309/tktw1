@@ -19,8 +19,7 @@
                             data-aos-duration="1000">
                             <div class="widget-content">
                                 <a href="{{ url('/') }}" class="footer-logo">
-                                    <img src="{{ asset('client/assets/images/logo/logo-main.png') }}"
-                                        alt="Brand Logo">
+                                    <img src="{{ asset('client/assets/images/logo/logo-main.png') }}" alt="Brand Logo">
                                 </a>
                                 <p>Pesco is an exciting International brand we provide high quality cloths</p>
                                 <ul class="ct-info-list mb-30">
@@ -60,15 +59,17 @@
                             <div class="widget-content">
                                 <h4 class="widget-title">Customer Services</h4>
                                 <ul class="widget-menu">
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a
-                                            href="#">Collections & Delivery</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a
-                                            href="#">Returns & Refunds</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a href="#">Terms
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Collections & Delivery</a></li>
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Returns & Refunds</a></li>
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Terms
                                             & Conditions</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a
-                                            href="#">Delivery Return</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a href="#">Store
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Delivery Return</a></li>
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Store
                                             Locations</a></li>
                                 </ul>
                             </div>
@@ -81,15 +82,17 @@
                             <div class="widget-content">
                                 <h4 class="widget-title">Quick Link</h4>
                                 <ul class="widget-menu">
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a
-                                            href="#">Privacy Policy</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a href="#">Terms
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Privacy Policy</a></li>
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Terms
                                             Of Use</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a
-                                            href="#">FAQ</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a
-                                            href="#">Contact</a></li>
-                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}" alt="star icon"><a href="#">Login
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">FAQ</a></li>
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Contact</a></li>
+                                    <li><img src="{{ asset('client/assets/images/icon/star-3.svg') }}"
+                                            alt="star icon"><a href="#">Login
                                             / Register</a></li>
                                 </ul>
                             </div>
@@ -103,7 +106,8 @@
                             <div class="widget-content">
                                 <div class="recent-post-item">
                                     <div class="thumb">
-                                        <img src="{{ asset('client/assets/images/footer/recent-post-1.png') }}" alt="post thumb">
+                                        <img src="{{ asset('client/assets/images/footer/recent-post-1.png') }}"
+                                            alt="post thumb">
                                     </div>
                                     <div class="content">
                                         <h4><a href="blog-details.html">Tips on Finding Affordable Fashion Gems
@@ -113,7 +117,8 @@
                                 </div>
                                 <div class="recent-post-item">
                                     <div class="thumb">
-                                        <img src="{{ asset('client/assets/images/footer/recent-post-2.png') }}" alt="post thumb">
+                                        <img src="{{ asset('client/assets/images/footer/recent-post-2.png') }}"
+                                            alt="post thumb">
                                     </div>
                                     <div class="content">
                                         <h4><a href="blog-details.html">Mastering the Art of Fashion E-commerce
@@ -123,7 +128,8 @@
                                 </div>
                                 <div class="recent-post-item">
                                     <div class="thumb">
-                                        <img src="{{ asset('client/assets/images/footer/recent-post-3.png') }}" alt="post thumb">
+                                        <img src="{{ asset('client/assets/images/footer/recent-post-3.png') }}"
+                                            alt="post thumb">
                                     </div>
                                     <div class="content">
                                         <h4><a href="blog-details.html">Must-Have Trends You Can Shop Online Now</a>
@@ -148,7 +154,8 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="payment-method text-lg-end">
-                            <a href="#"><img src="{{ asset('client/assets/images/footer/payment-method.png') }}"
+                            <a href="#"><img
+                                    src="{{ asset('client/assets/images/footer/payment-method.png') }}"
                                     alt="payment-method"></a>
                         </div>
                     </div>
@@ -156,4 +163,31 @@
             </div>
         </div>
     </div>
+
 </footer>
+<script src="{{ asset('client/assets/vendor/jquery-3.7.1.min.js') }}"></script>
+
+<!-- Bootstrap js -->
+<script src="{{ asset('client/assets/vendor/popper/popper.min.js') }}"></script>
+<script src="{{ asset('client/assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+
+<!-- Slick js -->
+<script src="{{ asset('client/assets/vendor/slick/slick.min.js') }}"></script>
+
+<!-- Magnific js -->
+<script src="{{ asset('client/assets/vendor/magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
+
+<!-- Nice-select js -->
+<script src="{{ asset('client/assets/vendor/nice-select/js/jquery.nice-select.min.js') }}"></script>
+
+<!-- Jquery Ui js -->
+<script src="{{ asset('client/assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
+
+<!-- SimplyCountdown js -->
+<script src="{{ asset('client/assets/vendor/simplyCountdown.min.js') }}"></script>
+
+<!-- Aos js -->
+<script src="{{ asset('client/assets/vendor/aos/aos.js') }}"></script>
+
+<!-- Main js -->
+<script src="{{ asset('client/assets/js/theme.js') }}"></script>

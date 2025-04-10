@@ -47,7 +47,7 @@
                                         <div class="hero-image">
                                             <img src="client/assets/images/hero/hero-one_img1.jpg" alt="Hero Image">
                                             <div class="hero-shape bg_cover"
-                                                style="background-image: url(client/assets/images/hero/hero-one-shape1.png);">
+                                                style="background-image: url('{{ asset('client/assets/images/hero/hero-one-shape1.png') }}');">
                                             </div>
                                         </div>
                                     </div>
@@ -252,9 +252,9 @@
                             data-aos-duration="800">
                             <div class="sub-heading d-inline-flex align-items-center">
                                 <i class="flaticon-sparkler"></i>
-                                <span class="sub-title">Categories</span>
+                                <span class="sub-title">Danh Mục</span>
                             </div>
-                            <h2>Browse Top Category</h2>
+                            <h2>Khám Phá Danh Mục Hàng Đầu</h2>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-4">
@@ -266,17 +266,18 @@
             </div>
             <!--=== Category Slider ===-->
             <div class="category-slider-one" data-aos="fade-up" data-aos-delay="20" data-aos-duration="1200">
-                <!--=== Category Item ===-->
-                <div class="category-item style-one text-center">
-                    <div class="category-img">
-                        <img src="client/assets/images/category/category-1.png" alt="category image">
+                @foreach ($categories as $category)
+                    <!--=== Category Item ===-->
+                    <div class="category-item style-one text-center">
+                        <div class="category-img">
+                                <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" style="width: 300px; ">
+                        </div>
+                        <div class="category-content">
+                            <a href="#" class="category-btn">{{ $category->name }}</a>
+                        </div>
                     </div>
-                    <div class="category-content">
-                        <a href="index.html" class="category-btn">Man Shirts</a>
-                    </div>
-                </div>
-                <!--=== Category Item ===-->
-
+                    <!--=== Category Item ===-->
+                @endforeach
             </div>
         </section><!--====== End Category Section ======-->
         <!--====== Start Banner Section ======-->
@@ -364,135 +365,140 @@
                             {{-- best seller --}}
                             <div class="tab-pane fade show active" id="cat1">
                                 <div class="row justify-content-center">
-                                    <div class="col-xl-3 col-lg-4 col-sm-6">
-                                        <!--=== Product Item  ===-->
-                                        <div class="product-item style-one mb-40">
-                                            <div class="product-thumbnail">
-                                                <img src="client/assets/images/products/feature-product-1.png"
-                                                    alt="Products">
-                                                <div class="discount">10% Off</div>
-                                                <div class="hover-content">
-                                                    <a href="#" class="icon-btn"><i class="fa fa-heart"></i></a>
-                                                    <a href="client/assets/images/products/feature-product-2.png"
-                                                        class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+                                    @foreach ($newProducts as $product)
+                                        <div class="col-xl-3 col-lg-4 col-sm-6">
+                                            <!--=== Product Item  ===-->
+                                            <div class="product-item style-one mb-40">
+                                                <div class="product-thumbnail">
+                                                    <a href="{{ route('detail', ['slug' => $product->slug]) }}">
+                                                        <img src="{{ asset($product->images) }}" alt="{{ $product->name }}" width="300" height="300">
+                                                    </a>
+                                                    <div class="discount">{{ $product->discount }}% Off</div>
+                                                    <div class="hover-content">
+                                                        <a href="#" class="icon-btn"><i
+                                                                class="fa fa-heart"></i></a>
+                                                        <a href="{{ asset($product->images) }}"
+                                                            class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+                                                    </div>
+                                                    <div class="cart-button">
+                                                        <a href="#" class="cart-btn"><i
+                                                                class="far fa-shopping-basket"></i> <span
+                                                                class="text">Thêm vào giỏ hàng</span></a>
+                                                    </div>
                                                 </div>
-                                                <div class="cart-button">
-                                                    <a href="#" class="cart-btn"><i
-                                                            class="far fa-shopping-basket"></i> <span class="text">Add
-                                                            To Cart</span></a>
-                                                </div>
-                                            </div>
-                                            <div class="product-info-wrap">
-                                                <div class="product-info">
-                                                    <ul class="ratings rating5">
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><a href="#">(80)</a></li>
-                                                    </ul>
-                                                    <h4 class="title"><a href="shop-details.html">Lightweight linen
-                                                            summer dress with belt</a></h4>
-                                                </div>
-                                                <div class="product-price">
-                                                    <span class="price prev-price"><span
-                                                            class="currency">$</span>80.00</span>
-                                                    <span class="price new-price"><span
-                                                            class="currency">$</span>40.00</span>
+                                                <div class="product-info-wrap">
+                                                    <div class="product-info">
+                                                        <ul class="ratings rating{{ $product->rating }}">
+                                                            @for ($i = 0; $i < 5; $i++)
+                                                                <li><i class="fas fa-star"></i></li>
+                                                            @endfor
+                                                            <li><a href="#">({{ $product->reviews_count }})</a></li>
+                                                        </ul>
+                                                        <h4 class="title"><a
+                                                                href="shop-details.html">{{ $product->name }}</a></h4>
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <span class="price prev-price"><span
+                                                                class="currency">$</span>{{ $product->original_price }}</span>
+                                                        <span class="price new-price"><span
+                                                                class="currency">$</span>{{ $product->discounted_price }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
+                                    @endforeach
                                 </div>
                             </div>
 
                             {{-- sale products --}}
                             <div class="tab-pane fade" id="cat3">
-                                    <div class="row justify-content-center">
+                                <div class="row justify-content-center">
+                                    @foreach ($newProducts as $product)
                                         <div class="col-xl-3 col-lg-4 col-sm-6">
-                                        <div class="product-item style-one mb-40">
-                                            <div class="product-thumbnail">
-                                                <img src="client/assets/images/products/feature-product-1.png"
-                                                    alt="Products">
-                                                <div class="discount">10% Off</div>
-                                                <div class="hover-content">
-                                                    <a href="#" class="icon-btn"><i class="fa fa-heart"></i></a>
-                                                    <a href="client/assets/images/products/feature-product-2.png"
-                                                        class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+                                            <div class="product-item style-one mb-40">
+                                                <div class="product-thumbnail">
+                                                    <a href="{{ route('detail', ['slug' => $product->slug]) }}">
+                                                        <img src="{{ asset($product->image) }}" alt="Products">
+                                                    </a>
+                                                    <div class="discount">{{ $product->discount }}% Off</div>
+                                                    <div class="hover-content">
+                                                        <a href="#" class="icon-btn"><i
+                                                                class="fa fa-heart"></i></a>
+                                                        <a href="{{ asset($product->image) }}"
+                                                            class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+                                                    </div>
+                                                    <div class="cart-button">
+                                                        <a href="#" class="cart-btn"><i
+                                                                class="far fa-shopping-basket"></i> <span
+                                                                class="text">Add To Cart</span></a>
+                                                    </div>
                                                 </div>
-                                                <div class="cart-button">
-                                                    <a href="#" class="cart-btn"><i
-                                                            class="far fa-shopping-basket"></i> <span class="text">Add
-                                                            To Cart</span></a>
-                                                </div>
-                                            </div>
-                                            <div class="product-info-wrap">
-                                                <div class="product-info">
-                                                    <ul class="ratings rating5">
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><a href="#">(80)</a></li>
-                                                    </ul>
-                                                    <h4 class="title"><a href="shop-details.html">Lightweight linen
-                                                            summer dress with belt</a></h4>
-                                                </div>
-                                                <div class="product-price">
-                                                    <span class="price prev-price"><span
-                                                            class="currency">$</span>80.00</span>
-                                                    <span class="price new-price"><span
-                                                            class="currency">$</span>40.00</span>
+                                                <div class="product-info-wrap">
+                                                    <div class="product-info">
+                                                        <ul class="ratings rating{{ $product->rating }}">
+                                                            @for ($i = 0; $i < 5; $i++)
+                                                                <li><i class="fas fa-star"></i></li>
+                                                            @endfor
+                                                            <li><a href="#">({{ $product->reviews_count }})</a></li>
+                                                        </ul>
+                                                        <h4 class="title"><a
+                                                                href="shop-details.html">{{ $product->name }}</a></h4>
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <span class="price prev-price"><span
+                                                                class="currency">$</span>{{ $product->original_price }}</span>
+                                                        <span class="price new-price"><span
+                                                                class="currency">$</span>{{ $product->discounted_price }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
+
+                            {{-- new products --}}
                             <div class="tab-pane fade" id="cat2">
                                 <div class="row justify-content-center">
-                                    <div class="col-xl-3 col-lg-4 col-sm-6">
-                                        <div class="product-item style-one mb-40">
-                                            <div class="product-thumbnail">
-                                                <img src="client/assets/images/products/feature-product-1.png"
-                                                    alt="Products">
-                                                <div class="discount">10% Off</div>
-                                                <div class="hover-content">
-                                                    <a href="#" class="icon-btn"><i class="fa fa-heart"></i></a>
-                                                    <a href="client/assets/images/products/feature-product-2.png"
-                                                        class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+                                    @foreach ($newProducts as $product)
+                                        <div class="col-xl-3 col-lg-4 col-sm-6">
+                                            <div class="product-item style-one mb-40">
+                                                <div class="product-thumbnail">
+                                                    <img src="{{ asset($product->image) }}" alt="Products">
+                                                    <div class="discount">{{ $product->discount }}% Off</div>
+                                                    <div class="hover-content">
+                                                        <a href="#" class="icon-btn"><i
+                                                                class="fa fa-heart"></i></a>
+                                                        <a href="{{ asset($product->image) }}"
+                                                            class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+                                                    </div>
+                                                    <div class="cart-button">
+                                                        <a href="#" class="cart-btn"><i
+                                                                class="far fa-shopping-basket"></i> <span
+                                                                class="text">Add To Cart</span></a>
+                                                    </div>
                                                 </div>
-                                                <div class="cart-button">
-                                                    <a href="#" class="cart-btn"><i
-                                                            class="far fa-shopping-basket"></i> <span class="text">Add
-                                                            To Cart</span></a>
-                                                </div>
-                                            </div>
-                                            <div class="product-info-wrap">
-                                                <div class="product-info">
-                                                    <ul class="ratings rating5">
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><i class="fas fa-star"></i></li>
-                                                        <li><a href="#">(80)</a></li>
-                                                    </ul>
-                                                    <h4 class="title"><a href="shop-details.html">Lightweight linen
-                                                            summer dress with belt</a></h4>
-                                                </div>
-                                                <div class="product-price">
-                                                    <span class="price prev-price"><span
-                                                            class="currency">$</span>80.00</span>
-                                                    <span class="price new-price"><span
-                                                            class="currency">$</span>40.00</span>
+                                                <div class="product-info-wrap">
+                                                    <div class="product-info">
+                                                        <ul class="ratings rating{{ $product->rating }}">
+                                                            @for ($i = 0; $i < 5; $i++)
+                                                                <li><i class="fas fa-star"></i></li>
+                                                            @endfor
+                                                            <li><a href="#">({{ $product->reviews_count }})</a></li>
+                                                        </ul>
+                                                        <h4 class="title"><a
+                                                                href="shop-details.html">{{ $product->name }}</a></h4>
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <span class="price prev-price"><span
+                                                                class="currency">$</span>{{ $product->original_price }}</span>
+                                                        <span class="price new-price"><span
+                                                                class="currency">$</span>{{ $product->discounted_price }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -656,10 +662,11 @@
             </div>
             <div class="container-fluid">
                 <div class="trending-products-slider" data-aos="fade-up" data-aos-duration="1400">
+                    @foreach ($newProducts as $product)
                     <!--=== Product Item ===-->
                     <div class="product-item style-two">
                         <div class="product-thumbnail">
-                            <img src="client/assets/images/products/trending-product-1.png" alt="Products">
+                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
                         </div>
                         <div class="product-info-wrap">
                             <div class="product-info">
@@ -671,8 +678,7 @@
                                     <li><i class="fas fa-star"></i></li>
                                     <li><a href="#">(80)</a></li>
                                 </ul>
-                                <h4 class="title"><a href="shop-details.html">Women Red & White Striped Crepe Top</a>
-                                </h4>
+                                <h4 class="title"><a href="{{ route('detail', $product->slug) }}">{{ $product->name }}</a></h4>
                             </div>
                             <div class="product-price">
                                 <span class="price prev-price"><span class="currency">$</span>90.00</span>
@@ -681,8 +687,7 @@
                         </div>
                     </div>
                     <!--=== Product Item ===-->
-                 
-
+                    @endforeach
                 </div>
             </div>
         </section><!--====== End Trending Products Sections  ======-->

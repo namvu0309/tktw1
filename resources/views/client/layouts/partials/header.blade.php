@@ -1,5 +1,12 @@
 <header class="header-area">
     <!--=== Search Header Main ===-->
+    <div class="preloader">
+        <div class="loader">
+            <img src="{{ asset('client/assets/images/loader.gif') }}" alt="Loader">
+        </div>
+    </div>
+    <!--====== Start Overlay ======-->
+    <div class="offcanvas__overlay"></div>
     <div class="header-top d-lg-block d-none">
         <div class="container">
             <div class="row">
@@ -74,8 +81,8 @@
             <div class="primary-menu">
                 <div class="nav-inner-menu">
                     <div class="site-branding">
-                        <a href="index.html" class="brand-logo"><img src="{{ asset('client/assets/images/logo/logo-main.png') }}"
-                                alt="Site Logo"></a>
+                        <a href="index.html" class="brand-logo"><img
+                                src="{{ asset('client/assets/images/logo/logo-main.png') }}" alt="Site Logo"></a>
                     </div>
                     <div class="pesco-nav-menu ">
                         <!--=== Responsive Menu Search ===-->
@@ -87,35 +94,23 @@
                         </div>
                         <nav class="main-menu">
                             <ul>
-                                <li class="menu-item has-children"><a href="#">Home</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="index.html">Home 01</a></li>
-                                        <li><a href="index-2.html">Home 02</a></li>
-                                    </ul>
+                                <li class="menu-item has-children"><a href="{{ asset('/') }}">Home</a>
+
                                 </li>
-                                <li class="menu-item has-children"><a href="#">Shop</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="shops-grid.html">Shop Grid</a></li>
-                                        <li><a href="shops.html">Shop left Sidebar</a></li>
-                                        <li><a href="shops-right-sidebar.html">Shop Right Sidebar</a></li>
-                                        <li><a href="shop-details.html">Product Details</a></li>
-                                        <li><a href="cart.html">Cart</a></li>
-                                        <li><a href="checkout.html">Checkout</a></li>
-                                        <li><a href="wishlists.html">Wishlist</a></li>
+                                <li class="menu-item has-children">
+                                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
+                                        aria-expanded="false">Sản phẩm <i class="fas fa-chevron-down"></i></a>
+                                    <ul class="sub-menu dropdown-menu row">
+                                        @foreach ($categories as $category)
+                                            <li class="col-6"><a href="{{ route('product.catalog', $category->slug) }}"
+                                                    class="dropdown-item">{{ $category->name }}</a></li>
+                                        @endforeach
                                     </ul>
                                 </li>
                                 <li class="menu-item has-children"><a href="#">Blogs</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="blogs.html">Our Blog</a></li>
-                                        <li><a href="blog-details.html">Blog Details</a></li>
-                                    </ul>
+
                                 </li>
-                                <li class="menu-item has-children"><a href="#">Pages</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="about-us.html">About Us</a></li>
-                                        <li><a href="faq.html">Faqs</a></li>
-                                    </ul>
-                                </li>
+
                                 <li class="menu-item"><a href="contact.html">Contact</a></li>
                             </ul>
                         </nav>
@@ -145,12 +140,42 @@
                                     </div>
                                 </div>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle desc-item-icon" href="#" id="userDropdown"
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                        style="color: black" fill="currentColor" class="bi bi-people"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4" />
+                                    </svg>
+                                </a>
+                                <div class="dropdown-menu fs-sm" aria-labelledby="dropdown-default-warning">
+                                    @if (Auth::check())
+                                        <a class="dropdown-item" href="#">
+                                            {{ Auth::user()->name }}
+                                        </a>
+                                        <a class="dropdown-item" href="#"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            Đăng xuất
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                        </form>
+                                    @else
+                                        <a class="dropdown-item" href="{{ route('login') }}">Đăng nhập</a>
+                                        <a class="dropdown-item" href="{{ route('register') }}">Đăng ký</a>
+                                    @endif
+                                </div>
+                            </li>
                         </ul>
                         <div class="navbar-toggler d-block d-lg-none">
                             <span></span>
                             <span></span>
                             <span></span>
                         </div>
+
                     </div>
                 </div>
             </div>

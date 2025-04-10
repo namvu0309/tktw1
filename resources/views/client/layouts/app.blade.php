@@ -73,33 +73,7 @@
         @include('client.layouts.partials.footer')
 
         <!--====== Core JS -->
-        <script src="{{ asset('client/assets/vendor/jquery-3.7.1.min.js') }}"></script>
-
-        <!-- Bootstrap js -->
-        <script src="{{ asset('client/assets/vendor/popper/popper.min.js') }}"></script>
-        <script src="{{ asset('client/assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-
-        <!-- Slick js -->
-        <script src="{{ asset('client/assets/vendor/slick/slick.min.js') }}"></script>
-
-        <!-- Magnific js -->
-        <script src="{{ asset('client/assets/vendor/magnific-popup/dist/jquery.magnific-popup.min.js') }}"></script>
-
-        <!-- Nice-select js -->
-        <script src="{{ asset('client/assets/vendor/nice-select/js/jquery.nice-select.min.js') }}"></script>
-
-        <!-- Jquery Ui js -->
-        <script src="{{ asset('client/assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
-
-        <!-- SimplyCountdown js -->
-        <script src="{{ asset('client/assets/vendor/simplyCountdown.min.js') }}"></script>
-
-        <!-- Aos js -->
-        <script src="{{ asset('client/assets/vendor/aos/aos.js') }}"></script>
-
-        <!-- Main js -->
-        <script src="{{ asset('client/assets/js/theme.js') }}"></script>
-
+       
         @stack('js')
     </body>
 </html>
