@@ -16,7 +16,7 @@ class ClientController extends Controller
     public function index()
     {
         // Lấy sản phẩm mới nhất kèm theo hình ảnh
-        $newProducts = Product::with(['productImages'])->latest()
+        $newProducts = Product::with(['images'])->latest()
             ->take(8)
             ->get();
 
@@ -27,7 +27,7 @@ class ClientController extends Controller
 
         // Lấy danh mục và sản phẩm kèm theo hình ảnh
         $categories = Category::with(['products' => function($query) {
-            $query->with('productImages'); // Sửa để lấy hình ảnh sản phẩm
+            $query->with('images'); // Sửa để lấy hình ảnh sản phẩm
         }])->get();
 
         // Lấy bài viết mới nếu có
@@ -45,25 +45,23 @@ class ClientController extends Controller
     // Hiển thị chi tiết sản phẩm
     public function showProduct($slug)
     {
-        // Lấy sản phẩm theo slug và kèm theo danh mục
-        $product = Product::where('slug', $slug)
-            ->with('category')->orderBy('id')
-            ->firstOrFail();
+        try {
+            // Lấy sản phẩm theo slug và kèm theo danh mục và hình ảnh
+            $product = Product::where('slug', $slug)
+                ->with(['category', 'images'])
+                ->firstOrFail();
 
-        // Lấy các sản phẩm liên quan trong cùng danh mục, ngoại trừ sản phẩm hiện tại
-        $relatedProducts = Product::where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
-            ->orderBy('id') // Thêm order by id
-            ->take(4)
-            ->get();
+            // Lấy các sản phẩm liên quan trong cùng danh mục, ngoại trừ sản phẩm hiện tại
+            $relatedProducts = Product::where('category_id', $product->category_id)
+                ->where('id', '!=', $product->id)
+                ->with('images') // Thêm eager loading cho images
+                ->take(4)
+                ->get();
 
-        $images = $product->productImages; // Lấy tất cả hình ảnh của sản phẩm
-
-        return view('client.detail', compact(
-            'product',
-            'relatedProducts',
-            'images'
-        ));
+            return view('client.detail', compact('product', 'relatedProducts'));
+        } catch (\Exception $e) {
+            return redirect()->route('home')->with('error', 'Không tìm thấy sản phẩm');
+        }
     }
 
     // Hiển thị sản phẩm theo danh mục
@@ -75,7 +73,7 @@ class ClientController extends Controller
         $products = Product::where('category_id', $category->id)
             ->paginate(12);
 
-        return view('client.product-catalog', compact(
+        return view('client.product_catalog', compact(
             'category',
             'products'
         ));

@@ -191,3 +191,4 @@
 
 <!-- Main js -->
 <script src="{{ asset('client/assets/js/theme.js') }}"></script>
+    <script src="{{asset('https://cdn.jsdelivr.net/npm/sweetalert2@11')}}"></script>

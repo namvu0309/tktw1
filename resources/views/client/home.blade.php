@@ -45,7 +45,8 @@
                                     <!--=== Hero Image ===-->
                                     <div class="hero-image-box">
                                         <div class="hero-image">
-                                            <img src="client/assets/images/hero/hero-one_img1.jpg" alt="Hero Image">
+                                            <img src="{{ asset('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuODaAgsErim5f3cE79zZZqIuF9MbEAgIRvw&s') }}"
+                                                alt="Hero Image" width="460" height="550">
                                             <div class="hero-shape bg_cover"
                                                 style="background-image: url('{{ asset('client/assets/images/hero/hero-one-shape1.png') }}');">
                                             </div>
@@ -270,7 +271,10 @@
                     <!--=== Category Item ===-->
                     <div class="category-item style-one text-center">
                         <div class="category-img">
-                                <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" style="width: 300px; ">
+                            <a href="{{ route('category', $category->slug) }}">
+                                <img src="{{ asset($category->image) }}" alt="{{ $category->name }}"
+                                    style="width: 300px; ">
+                            </a>
                         </div>
                         <div class="category-content">
                             <a href="#" class="category-btn">{{ $category->name }}</a>
@@ -370,8 +374,20 @@
                                             <!--=== Product Item  ===-->
                                             <div class="product-item style-one mb-40">
                                                 <div class="product-thumbnail">
-                                                    <a href="{{ route('detail', ['slug' => $product->slug]) }}">
-                                                        <img src="{{ asset($product->images) }}" alt="{{ $product->name }}" width="300" height="300">
+                                                    <a href="{{ route('details', ['slug' => $product->slug]) }}">
+                                                        @php
+                                                            // Lấy ảnh chính từ collection images
+                                                            $primaryImage = $product->images->firstWhere(
+                                                                'is_primary',
+                                                                1,
+                                                            );
+                                                        @endphp
+
+                                                        <a href="{{ asset($primaryImage->image_path) }}"
+                                                            class="img-popup">
+                                                            <img src="{{ asset($primaryImage->image_path) }}"
+                                                                alt="{{ $primaryImage->alt }}" width="300px">
+                                                        </a>
                                                     </a>
                                                     <div class="discount">{{ $product->discount }}% Off</div>
                                                     <div class="hover-content">
@@ -395,7 +411,8 @@
                                                             <li><a href="#">({{ $product->reviews_count }})</a></li>
                                                         </ul>
                                                         <h4 class="title"><a
-                                                                href="shop-details.html">{{ $product->name }}</a></h4>
+                                                                href="{{ asset('details', $product->slug) }}">{{ $product->name }}</a>
+                                                        </h4>
                                                     </div>
                                                     <div class="product-price">
                                                         <span class="price prev-price"><span
@@ -417,7 +434,7 @@
                                         <div class="col-xl-3 col-lg-4 col-sm-6">
                                             <div class="product-item style-one mb-40">
                                                 <div class="product-thumbnail">
-                                                    <a href="{{ route('detail', ['slug' => $product->slug]) }}">
+                                                    <a href="{{ route('details', ['slug' => $product->slug]) }}">
                                                         <img src="{{ asset($product->image) }}" alt="Products">
                                                     </a>
                                                     <div class="discount">{{ $product->discount }}% Off</div>
@@ -442,7 +459,8 @@
                                                             <li><a href="#">({{ $product->reviews_count }})</a></li>
                                                         </ul>
                                                         <h4 class="title"><a
-                                                                href="shop-details.html">{{ $product->name }}</a></h4>
+                                                                href="{{ asset('details') }}">{{ $product->name }}</a>
+                                                        </h4>
                                                     </div>
                                                     <div class="product-price">
                                                         <span class="price prev-price"><span
@@ -487,7 +505,8 @@
                                                             <li><a href="#">({{ $product->reviews_count }})</a></li>
                                                         </ul>
                                                         <h4 class="title"><a
-                                                                href="shop-details.html">{{ $product->name }}</a></h4>
+                                                                href="{{ asset('details', $product->slug) }}">{{ $product->name }}</a>
+                                                        </h4>
                                                     </div>
                                                     <div class="product-price">
                                                         <span class="price prev-price"><span
@@ -528,41 +547,74 @@
                 </div>
                 <!--=== Feature Slider  ===-->
                 <div class="feature-slider-one" data-aos="fade-up" data-aos-delay="20" data-aos-duration="1400">
-                    <!--=== Project Item  ===-->
-                    <div class="product-item style-one mb-40">
-                        <div class="product-thumbnail">
-                            <img src="client/assets/images/products/feature-product-1.png" alt="Products">
-                            <div class="discount">80% Off</div>
-                            <div class="hover-content">
-                                <a href="#" class="icon-btn"><i class="fa fa-heart"></i></a>
-                                <a href="client/assets/images/products/feature-product-1.png"
-                                    class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
-                            </div>
-                            <div class="cart-button">
-                                <a href="#" class="cart-btn"><i class="far fa-shopping-basket"></i> <span
-                                        class="text">Add To Cart</span></a>
-                            </div>
-                        </div>
-                        <div class="product-info-wrap">
-                            <div class="product-info">
-                                <ul class="ratings rating4">
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><a href="#">(50)</a></li>
-                                </ul>
-                                <h4 class="title"><a href="shop-details.html">Cozy knit sweater with pockets</a></h4>
-                            </div>
-                            <div class="product-price">
-                                <span class="price prev-price"><span class="currency">$</span>67.00</span>
-                                <span class="price new-price"><span class="currency">$</span>23.00</span>
-                            </div>
+                    <div class="tab-pane fade show active" id="cat1">
+                        <div class="row justify-content-center">
+                            @foreach ($newProducts as $product)
+                                <div class="col-xl-3 col-lg-4 col-sm-6">
+                                    <!--=== Product Item  ===-->
+                                    <div class="product-item style-one mb-40">
+                                        <div class="product-thumbnail">
+                                            @php
+                                                // Lấy ảnh chính từ collection images
+                                                $primaryImage = $product->images->firstWhere('is_primary', 1);
+                                            @endphp
+
+                                            <a href="{{ route('details', $product->slug) }}">{{ $product->name }}
+                                                @if ($primaryImage)
+                                                    <img src="{{ asset($primaryImage->image_path) }}"
+                                                        alt="{{ $primaryImage->alt }}" class="img-fluid" width="300">
+                                                @else
+                                                    <img src="{{ asset('images/no-image.jpg') }}" alt="Không có ảnh"
+                                                        class="img-fluid" width="300">
+                                                @endif
+                                            </a>
+
+                                            <div class="discount">{{ $product->discount }}% Off</div>
+                                            <div class="hover-content">
+                                                <a href="#" class="icon-btn"><i class="fa fa-heart"></i></a>
+                                                <a href="{{ asset($primaryImage->image_path) }}"
+                                                    class="img-popup icon-btn">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </div>
+                                            <div class="cart-button">
+                                                <a href="#" class="cart-btn">
+                                                    <i class="far fa-shopping-basket"></i>
+                                                    <span class="text">Thêm vào giỏ hàng</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="product-info-wrap">
+                                            <div class="product-info">
+                                                <ul class="ratings">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= $product->rating)
+                                                            <li><i class="fas fa-star"></i></li>
+                                                        @else
+                                                            <li><i class="far fa-star"></i></li>
+                                                        @endif
+                                                    @endfor
+                                                    <li><a href="#">({{ $product->reviews_count }})</a></li>
+                                                </ul>
+                                                <h4 class="title">
+                                                    <a
+                                                        href="{{ route('details', ['slug' => $product->slug]) }}">{{ $product->name }}</a>
+                                                </h4>
+                                            </div>
+                                            <div class="product-price">
+                                                <span class="price prev-price">
+                                                    <span class="currency">$</span>{{ $product->original_price }}
+                                                </span>
+                                                <span class="price new-price">
+                                                    <span class="currency">$</span>{{ $product->discounted_price }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                    <!--=== Project Item  ===-->
-
                 </div>
             </div>
         </section><!--====== End Features Products Section  ======-->
@@ -663,30 +715,31 @@
             <div class="container-fluid">
                 <div class="trending-products-slider" data-aos="fade-up" data-aos-duration="1400">
                     @foreach ($newProducts as $product)
-                    <!--=== Product Item ===-->
-                    <div class="product-item style-two">
-                        <div class="product-thumbnail">
-                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
-                        </div>
-                        <div class="product-info-wrap">
-                            <div class="product-info">
-                                <ul class="ratings rating5">
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><i class="fas fa-star"></i></li>
-                                    <li><a href="#">(80)</a></li>
-                                </ul>
-                                <h4 class="title"><a href="{{ route('detail', $product->slug) }}">{{ $product->name }}</a></h4>
+                        <!--=== Product Item ===-->
+                        <div class="product-item style-two">
+                            <div class="product-thumbnail">
+                                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
                             </div>
-                            <div class="product-price">
-                                <span class="price prev-price"><span class="currency">$</span>90.00</span>
-                                <span class="price new-price"><span class="currency">$</span>10.00</span>
+                            <div class="product-info-wrap">
+                                <div class="product-info">
+                                    <ul class="ratings rating5">
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><a href="#">(80)</a></li>
+                                    </ul>
+                                    <h4 class="title"><a
+                                            href="{{ route('details', $product->slug) }}">{{ $product->name }}</a></h4>
+                                </div>
+                                <div class="product-price">
+                                    <span class="price prev-price"><span class="currency">$</span>90.00</span>
+                                    <span class="price new-price"><span class="currency">$</span>10.00</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!--=== Product Item ===-->
+                        <!--=== Product Item ===-->
                     @endforeach
                 </div>
             </div>

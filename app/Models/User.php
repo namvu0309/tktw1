@@ -19,14 +19,9 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'ho_ten',
+        'name',
         'email',
         'password',
-        'dia_chi',
-        'so_dien_thoai',
-        'ngay_sinh',
-        'gioi_tinh',
-        'anh_dai_dien',
         'role'
     ];
 
@@ -41,8 +36,7 @@ class User extends Authenticatable
     ];
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'ngay_sinh' => 'date',
-        'gioi_tinh' => 'integer',
+        'password' => 'hashed',
     ];
 
     /**

@@ -82,7 +82,7 @@
                 <div class="nav-inner-menu">
                     <div class="site-branding">
                         <a href="index.html" class="brand-logo"><img
-                                src="{{ asset('client/assets/images/logo/logo-main.png') }}" alt="Site Logo"></a>
+                                src="{{ asset('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6Yz1WpG9wAgGziKITQS8j3dd_cwRQZ9G4tA&s') }}" alt="Site Logo" width="155px" height="40px"></a>
                     </div>
                     <div class="pesco-nav-menu ">
                         <!--=== Responsive Menu Search ===-->
@@ -101,11 +101,18 @@
                                     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"
                                         aria-expanded="false">Sản phẩm <i class="fas fa-chevron-down"></i></a>
                                     <ul class="sub-menu dropdown-menu row">
-                                        @foreach ($categories as $category)
-                                            <li class="col-6"><a href="{{ route('product.catalog', $category->slug) }}"
-                                                    class="dropdown-item">{{ $category->name }}</a></li>
+                                        @foreach ($allCategories  as $category)
+                                            @if ($category)
+                                                <li class="col-6">
+                                                    <a href="{{ route('category', $category->slug) }}"
+                                                        class="dropdown-item">
+                                                        {{ $category->name }}
+                                                    </a>
+                                                </li>
+                                            @endif
                                         @endforeach
                                     </ul>
+
                                 </li>
                                 <li class="menu-item has-children"><a href="#">Blogs</a>
 

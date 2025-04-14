@@ -248,12 +248,7 @@ class CategoryController extends Controller
 
             if ($productsCount > 0 && !$forceDelete) {
                 // Nếu có sản phẩm và không phải force delete, trả về JSON response
-                return response()->json([
-                    'needConfirmation' => true,
-                    'message' => "Danh mục này đang chứa {$productsCount} sản phẩm.",
-                    'productsCount' => $productsCount,
-                    'categoryId' => $category->id
-                ]);
+               
             }
 
             // Nếu force delete hoặc không có sản phẩm, tiến hành xóa
@@ -281,12 +276,7 @@ class CategoryController extends Controller
 
             DB::commit();
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Danh mục đã được xóa thành công.'
-                ]);
-            }
+
 
             return redirect()->route('admin.categories.index')
                 ->with('success', 'Danh mục đã được xóa thành công.');
@@ -295,12 +285,7 @@ class CategoryController extends Controller
             DB::rollBack();
             Log::error('Lỗi khi xóa danh mục: ' . $e->getMessage());
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ]);
-            }
+
 
             return redirect()->route('admin.categories.index')
                 ->with('error', $e->getMessage());

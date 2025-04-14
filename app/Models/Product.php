@@ -127,7 +127,7 @@ class Product extends Model
         return $count ? "{$slug}-{$count}" : $slug;
     }
 
-    public function productImages()
+    public function images()
     {
         return $this->hasMany(ProductImage::class);
     }

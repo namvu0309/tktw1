@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Client\RegisterRequest;
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisterRequest;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -34,7 +34,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             return $this->redirectBasedOnRole()
-                ->with('success', 'Đăng nhập thành công');
+                ->with('success', 'Xin chào ' . Auth::user()->name . '! Đăng nhập thành công.');
         }
 
         return back()->withErrors([
@@ -60,23 +60,11 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
-        if ($request->hasFile('anh_dai_dien')) {
-            $path = $request->file('anh_dai_dien')->store('avatars', 'public');
-            $validated['anh_dai_dien'] = $path;
-        }
-
-        $validated['password'] = Hash::make($validated['mat_khau']);
-
         $user = User::create([
-            'ho_ten' => $validated['ho_ten'],
+            'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password'],
-            'dia_chi' => $validated['dia_chi'],
-            'so_dien_thoai' => $validated['so_dien_thoai'],
-            'ngay_sinh' => $validated['ngay_sinh'],
-            'gioi_tinh' => $validated['gioi_tinh'],
-            'anh_dai_dien' => $validated['anh_dai_dien'] ?? null,
-            'role' => 'user'
+            'password' => Hash::make($validated['password']),
+            'role' => 'user' // Mặc định là user
         ]);
 
         Auth::login($user);

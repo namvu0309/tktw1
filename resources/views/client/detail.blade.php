@@ -33,10 +33,20 @@
                             <div class="product-gallery-area mb-50">
                                 <div class="product-big-slider mb-30">
                                     <div class="product-img">
-                                        <a href="{{ asset($product->image) }}" class="img-popup">
-                                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
-                                        </a>
+                                        @php
+                                            // Lấy ảnh chính từ collection images
+                                            $primaryImage = $product->images->firstWhere('is_primary', 1);
+                                        @endphp
+                                        @if($primaryImage)
+                                            <a href="{{ asset($primaryImage->image_path) }}" class="img-popup">
+                                                <img src="{{ asset($primaryImage->image_path) }}" alt="{{ $primaryImage->alt }}"
+                                                    width="500px">
+                                            </a>
+                                        @else
+                                            <img src="{{ asset('images/no-image.jpg') }}" alt="Không có ảnh" width="500px">
+                                        @endif
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -44,8 +54,10 @@
                             <div class="product-info mb-50">
                                 <h4 class="title">{{ $product->name }}</h4>
                                 <div class="product-price">
-                                    <span class="price prev-price"><span class="currency">$</span>{{ $product->original_price }}</span>
-                                    <span class="price new-price"><span class="currency">$</span>{{ $product->discounted_price }}</span>
+                                    <span class="price prev-price"><span
+                                            class="currency">$</span>{{ $product->original_price }}</span>
+                                    <span class="price new-price"><span
+                                            class="currency">$</span>{{ $product->discounted_price }}</span>
                                 </div>
                                 <p>{{ $product->description }}</p>
                                 <div class="product-cart-variation">
@@ -280,14 +292,23 @@
                         <div class="col-md-3">
                             <div class="product-item">
                                 <div class="product-thumbnail">
-                                    <a href="{{ route('detail', ['slug' => $relatedProduct->slug]) }}">
-                                        <img src="{{ asset($relatedProduct->image) }}" alt="{{ $relatedProduct->name }}">
+                                    <a href="{{ route('details', ['slug' => $relatedProduct->slug]) }}">
+                                        @if($relatedProduct->images->isNotEmpty())
+                                            <img src="{{ asset($relatedProduct->images->first()->image_path) }}" 
+                                                 alt="{{ $relatedProduct->name }}">
+                                        @endif
                                     </a>
                                 </div>
                                 <div class="product-info">
-                                    <h4 class="title"><a href="{{ route('detail', ['slug' => $relatedProduct->slug]) }}">{{ $relatedProduct->name }}</a></h4>
+                                    <h4 class="title">
+                                        <a href="{{ route('details', ['slug' => $relatedProduct->slug]) }}">
+                                            {{ $relatedProduct->name }}
+                                        </a>
+                                    </h4>
                                     <div class="product-price">
-                                        <span class="price"><span class="currency">$</span>{{ $relatedProduct->discounted_price }}</span>
+                                        <span class="price">
+                                            <span class="currency">$</span>{{ number_format($relatedProduct->price, 0, ',', '.') }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>

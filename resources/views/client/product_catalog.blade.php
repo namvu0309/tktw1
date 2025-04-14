@@ -70,41 +70,53 @@
                 </div>
                 <div class="shop-page-wrapper">
                     <div class="row">
-                        @foreach($products as $product)
-                        <div class="col-xl-4 col-md-6 col-sm-12">
-                            <!--=== Product Item  ===-->
-                            <div class="product-item style-one mb-40" data-aos="fade-up" data-aos-delay="25"
-                                data-aos-duration="400">
-                                <div class="product-thumbnail">
-                                    <img src="{{ asset($product->image) }}" alt="Products">
-                                    <div class="discount">{{ $product->discount }}% Off</div>
-                                    <div class="hover-content">
-                                        <a href="#" class="icon-btn"><i class="fa fa-heart"></i></a>
-                                        <a href="{{ route('product.details', $product->id) }}" class="img-popup icon-btn"><i
-                                                class="fa fa-eye"></i></a>
+                        @foreach ($products as $product)
+                            <div class="col-xl-4 col-md-6 col-sm-12">
+                                <!--=== Product Item  ===-->
+                                <div class="product-item style-one mb-40" data-aos="fade-up" data-aos-delay="25"
+                                    data-aos-duration="400">
+                                    <div class="product-thumbnail">
+                                        @php
+                                            // Lấy ảnh chính từ collection images
+                                            $primaryImage = $product->images->firstWhere('is_primary', 1);
+                                        @endphp
+
+                                        <a href="{{ $primaryImage ? asset($primaryImage->image_path) : '#' }}" class="img-popup">
+                                            <img src="{{ $primaryImage ? asset($primaryImage->image_path) : asset('images/default-product.png') }}" alt="{{ $primaryImage ? $primaryImage->alt : 'Hình ảnh sản phẩm mặc định' }}" width="200px">
+                                        </a>
+                                        <div class="discount">10% Off</div>
+                                        <div class="hover-content">
+                                            <a href="#" class="icon-btn"><i class="fa fa-heart"></i></a>
+                                            <a href="{{ route('category', $product->slug) }}"
+                                                class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+                                        </div>
+                                        <div class="cart-button">
+                                            <a href="#" class="cart-btn"><i class="far fa-shopping-basket"></i> <span
+                                                    class="text">Add To Cart</span></a>
+                                        </div>
                                     </div>
-                                    <div class="cart-button">
-                                        <a href="#" class="cart-btn"><i class="far fa-shopping-basket"></i> <span
-                                                class="text">Add To Cart</span></a>
-                                    </div>
-                                </div>
-                                <div class="product-info-wrap">
-                                    <div class="product-info">
-                                        <ul class="ratings rating5">
-                                            @for($i = 0; $i < 5; $i++)
+                                    <div class="product-info-wrap">
+                                        <div class="product-info">
+                                            <ul class="ratings rating5">
                                                 <li><i class="fas fa-star"></i></li>
-                                            @endfor
-                                            <li><a href="#">{{ $product->reviews_count }}</a></li>
-                                        </ul>
-                                        <h4 class="title"><a href="{{ route('product.details', $product->id) }}">{{ $product->name }}</a></h4>
-                                    </div>
-                                    <div class="product-price">
-                                        <span class="price prev-price"><span class="currency">$</span>{{ $product->old_price }}</span>
-                                        <span class="price new-price"><span class="currency">$</span>{{ $product->new_price }}</span>
+                                                <li><i class="fas fa-star"></i></li>
+                                                <li><i class="fas fa-star"></i></li>
+                                                <li><i class="fas fa-star"></i></li>
+                                                <li><i class="fas fa-star"></i></li>
+                                            </ul>
+                                            <h4 class="title"><a
+                                                    href="{{ route('details', $product->slug) }}">{{ $product->name }}</a>
+                                            </h4>
+                                        </div>
+                                        <div class="product-price">
+                                            <span class="price prev-price"><span
+                                                    class="currency">$</span>{{ $product->old_price }}</span>
+                                            <span class="price new-price"><span
+                                                    class="currency">$</span>{{ $product->new_price }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         @endforeach
                     </div>
                     <div class="row">

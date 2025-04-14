@@ -69,13 +69,11 @@ Route::name('')
 
         // Protected Routes
         Route::middleware(['auth', 'role:user'])->group(function () {
-            Route::get('/san-pham/{slug}', [ClientController::class, 'showProduct'])
-                ->name('product');
+
             Route::get('/danh-muc/{slug}', [ClientController::class, 'categoryProducts'])
                 ->name('category');
             Route::get('/tim-kiem', [ClientController::class, 'search'])
                 ->name('search');
-            Route::get('/san-pham/{slug}', [ClientController::class, 'showProduct'])->name('detail');
-            Route::get('/product_catalog/{slug}', [ClientController::class, 'categoryProducts'])->name('product.catalog');
+            Route::get('/san-pham/{slug}', [ClientController::class, 'showProduct'])->name('details');
         });
     });
